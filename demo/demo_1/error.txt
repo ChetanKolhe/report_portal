@@ -1,0 +1,2 @@
+This is normal error text message ,
+Which could be printed out .
