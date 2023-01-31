@@ -13,9 +13,9 @@ python -m pip install -r requiement.txt
 
 ## Set the environment variable before execute.  
 ```shell
-export REPORT_IO_ENDPOINT="http://10.176.106.65:8080"
-export REPORT_IO_PROJECT="marketplace"
-export REPORT_IO_TOKEN="0bbf9a2f-b0fd-4f3b-8f1d-4e3f5d0fba30"
+export REPORT_IO_ENDPOINT="https://demo.reportportal.io"
+export REPORT_IO_PROJECT="default_personal/"
+export REPORT_IO_TOKEN="12ce7721-d852-4b1e-bc0a-686105307071"
 ```
 
 
