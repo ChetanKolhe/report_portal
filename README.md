@@ -14,7 +14,7 @@ python -m pip install -r requiement.txt
 ## Set the environment variable before execute for linux.  
 ```shell
 export REPORT_IO_ENDPOINT="https://demo.reportportal.io"
-export REPORT_IO_PROJECT="default_personal/"
+export REPORT_IO_PROJECT="default_personal"
 export REPORT_IO_TOKEN="12ce7721-d852-4b1e-bc0a-686105307071"
 ```
 
@@ -22,7 +22,7 @@ export REPORT_IO_TOKEN="12ce7721-d852-4b1e-bc0a-686105307071"
 ## Set the environment variable before execute for windows.  
 ```shell
 set REPORT_IO_ENDPOINT=https://demo.reportportal.io
-set REPORT_IO_PROJECT=default_personal/
+set REPORT_IO_PROJECT=default_personal
 set REPORT_IO_TOKEN=12ce7721-d852-4b1e-bc0a-686105307071
 ```
 
