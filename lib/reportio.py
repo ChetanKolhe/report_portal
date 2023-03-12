@@ -236,7 +236,7 @@ class ReportIO:
         if filter_attributes:
             params['filter.has.compositeAttribute'] = filter_attributes
 
-        url = self._report_io_end_point + "/api/v1/marketplace/launch"
+        url = self._report_io_end_point + f"/api/v1/{self._report_io_project}/launch"
         response = self._service.session.get(url=url, params=params, verify=self._service.verify_ssl)
 
         try:
@@ -266,7 +266,7 @@ class ReportIO:
             params["filter.eq.parentId"] = parent_id
             del params["filter.level.path"]
 
-        url = self._report_io_end_point + "/api/v1/marketplace/item/v2"
+        url = self._report_io_end_point + f"/api/v1/{self._report_io_project}/item/v2"
         response = self._service.session.get(url=url, params=params, verify=self._service.verify_ssl)
 
         return response.json()["content"]
@@ -279,7 +279,7 @@ class ReportIO:
         params = {
             'ids': ",".join([str(value) for value in task_id]),
         }
-        url = self._report_io_end_point + f"/api/v1/marketplace/item/"
+        url = self._report_io_end_point + f"/api/v1/{self._report_io_project}/item/"
         response = self._service.session.delete(url=url, params=params, verify=self._service.verify_ssl)
 
         # print(response.json())
@@ -312,7 +312,7 @@ class ReportIO:
                 attribute_result_list.append({"key": key, "value": value})
             body["attributes"] = attribute_result_list
 
-        url = self._report_io_end_point + f"/api/v1/marketplace/launch/merge"
+        url = self._report_io_end_point + f"/api/v1/{self._report_io_project}/launch/merge"
         response = self._service.session.post(url=url, json=body, verify=self._service.verify_ssl)
 
         if response.status_code == 200:
