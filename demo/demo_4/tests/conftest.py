@@ -13,9 +13,7 @@ sys.path.append(os.getcwd())
 from lib.report_portal_logger import ReportPortalLogger, time_stamp
 
 
-endpoint = "https://demo.reportportal.io"
-project = "default_personal"
-token = "0bbf9a2f-b0fd-4f3b-8f1d-4e3f5d0fba30"
+
 launch_name = "Test Launch with custom logger"
 launch_doc = "Testing logging with attachment."
 
@@ -23,7 +21,8 @@ launch_doc = "Testing logging with attachment."
 @pytest.fixture(scope="session")
 def launch(request):
     logging.setLoggerClass(ReportPortalLogger)
-    client = RPClient()
+    client = RPClient(endpoint=os.environ.get("REPORT_IO_ENDPOINT"), project=os.environ.get("REPORT_IO_PROJECT"),
+                      token=os.environ.get("REPORT_IO_TOKEN"))
     launch_id = client.start_launch(name=launch_name, start_time=time_stamp(), description="Description")
     print(client.get_launch_ui_url())
     yield launch_id
