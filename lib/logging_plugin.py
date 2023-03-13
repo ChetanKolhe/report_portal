@@ -21,17 +21,17 @@ class LogPlugin:
     def __init__(self, config):
         """Initialise plugin with config object."""
         self.config: Config = config
-        # self.config.services = [ReportPortalClient()]
-        #
-        # for each_session in self.config.services:
-        #     each_session.start_session(session_name=session_name, session_description=session_description)
+        self.config.services = [ReportPortalClient()]
+
+        for each_session in self.config.services:
+            each_session.start_session(session_name=session_name, session_description=session_description)
 
     def pytest_sessionstart(self, session: pytest.Session) -> None:
         """Start the pytest session."""
         session.stash[all_key] = self.config.services
 
-        # for each_session in session.stash[all_key]:
-        #     each_session.start_session(session_name=session_name, session_description=session_description)
+        for each_session in session.stash[all_key]:
+            each_session.start_session(session_name=session_name, session_description=session_description)
 
     def pytest_sessionfinish(self, session: pytest.Session):
         """Terminate the session object ."""
