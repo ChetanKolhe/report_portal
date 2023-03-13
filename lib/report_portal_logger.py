@@ -1,5 +1,3 @@
-import logging
-from logging import Logger
 from time import time
 from reportportal_client import RPLogger, RPLogHandler
 from reportportal_client.client import RPClient
@@ -28,6 +26,10 @@ class ReportPortalClient:
         self.launch_id = launch_id
         self.client: [RPClient, None] = None
         self.service = ReportIO(launch_id=self.launch_id)
+        self.project = report_io_project
+
+        # This parameter specific test case
+        self._test_status = None
 
         if report_io_endpoint is None:
             self._report_io_end_point = os.environ.get("REPORT_IO_ENDPOINT")
@@ -83,6 +85,57 @@ class ReportPortalClient:
         item_id = self.service.create_test_suit(suit_name=module, suit_descr="")
         suite_info[module.strip()] = item_id
         return item_id
+
+    def start_session(self, session_name, session_description):
+        """Start the launch session ."""
+        client = self.get_client()
+        client.start()
+        self.launch_id = client.start_launch(
+            name=session_name, start_time=time_stamp(), description=session_description
+        )
+        print(client.get_launch_ui_url())
+
+    def finish_session(self):
+        """Stop the launch session ."""
+        self.client: RPClient
+        self.client.finish_launch(end_time=time_stamp())
+        self.client.terminate()
+
+    def get_handler(self, test_case_id, description, module):
+        """Start the test case ."""
+        self._report_portal_client = ReportPortalClient(launch_id=self.launch_id, report_io_project=self.project)
+        self.client = self._report_portal_client.get_client()
+
+        # Add logic to create task suit
+        # task_suite_id = client.start_test_item("Default-Task-Suit", start_time=time_stamp(), item_type="SUITE")
+        task_suite_id = self._report_portal_client.get_test_module_id(module=module)
+
+        self.test_case_id = self.client.start_test_item(
+            name=test_case_id,
+            start_time=time_stamp(),
+            item_type="STEP",
+            description=description,
+            parent_item_id=task_suite_id,
+        )
+
+        self.client.start()
+        return RPLogHandler(rp_client=self.client)
+
+    def get_test_session(self):
+        """Return the test case session ."""
+        return ReportPortalClient(launch_id=self.launch_id, report_io_project=self.project)
+
+    def stop_test_session(self, status="passed"):
+        """Mark the test case passed/failed ."""
+        if self._test_status is None:
+            self.client.finish_test_item(item_id=self.test_case_id, status=status, end_time=time_stamp())
+            self._test_status = status
+
+        if status == "failed":
+            self.client.finish_test_item(item_id=self.test_case_id, status=status, end_time=time_stamp())
+            self._test_status = status
+
+        self.client.terminate()
 
 
 class ReportPortalLogger(RPLogger):
@@ -147,20 +200,3 @@ class ReportPortalLogger(RPLogger):
 
     def __repr__(self):
         return f"<{self.__class__}(INFO)>"
-
-
-if __name__ == '__main__':
-    logging.setLoggerClass(ReportPortalLogger)
-
-    logger: [ReportPortalLogger, Logger] = logging.getLogger("sdsafsdf")
-    logger.setLevel(logging.INFO)
-
-    logger: ReportPortalLogger
-    logger.test_begin("demo", "ksdjkls", "lskjdlsjkdf")
-    logger.info("this is infor message " * 100)
-    logger.warning("this is warning message")
-    try:
-        raise ValueError("This is some exception occur ")
-    except Exception as e:
-        logger.exception(e)
-    logger.test_end()
