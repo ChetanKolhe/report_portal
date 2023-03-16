@@ -1,92 +1,31 @@
-from datetime import datetime, timedelta
-import pytest
+from logging import Logger
+import os
 
 
-def test_read_all_has_kent(logger):
-    """ Test on hitting People GET API, we get a user named kent in the list of people
-    """
-    response = "kent"
-
-    # assert_that(response.status_code).is_equal_to(requests.codes.ok)
-    logger.info("User successfully read")
-    # logger.debug("This is info message")
-
-    # assert_people_have_person_with_first_name(response, first_name='Kent')
-    assert response == "kent", "Issue occur"
+def test_pass(rp_logger:Logger):
+    rp_logger.info("Pass Test Case")
+    assert "sample" == "sample", "Pass Message"
 
 
-def test_logger_with_attachment(logger):
-    """Memory with Attachment
-   """
-    response = "kent"
+def test_fail(rp_logger:Logger):
+    rp_logger.info("Pass Test Case")
+    assert "sample" == "not sample", "Pass Message"
 
-    assert response == "kent", "Issue occur"
-
-
-def test_logger_all_message_print(logger):
-    """It  will check all possible combination .
-   """
-
-    logger.info("Info message")
-    logger.debug("this is debug message")
-    logger.error("this is error message")
-    logger.exception("this is exception message")
-    response = "kent"
-
-    # assert_that(response.status_code).is_equal_to(requests.codes.ok)
-    logger.info("Memory Usage Attachment",
-                attachment={
-                    "name": "free_memory.txt",
-                    "data": "This is large data set",
-                    "mime": "application/octet-stream",
-                }
-                )
-    # logger.debug("This is info message")
-
-    # assert_people_have_person_with_first_name(response, first_name='Kent')
-    assert response == "Kent", "Issue occur"
+def test_attachment(rp_logger:Logger):
+    rp_logger.info("Attachment test case")
+    rp_logger.error("Attachemtn error ")
 
 
-def test_large_message_dump(logger):
-    """It  will check all possible combination .
-   """
+    image_path = os.path.join(os.path.dirname(__file__),"sample.jpg")
+    with open(image_path, "rb") as image_file:
+        rp_logger.info("Some Text Here",
+                       attachment={"name": "test_name_screenshot.jpg",
+                                   "data": image_file.read(),
+                                   "mime": "image/png"})
 
-    logger.info("Info message " * 10000)
-    logger.debug("this is debug message")
-    logger.error("this is error message")
-    logger.exception("this is exception message")
-    response = "kent"
-
-    assert response == "kent", "Issue occur"
-
-
-testdata = [
-    (datetime(2001, 12, 12), datetime(2001, 12, 11), timedelta(1)),
-    (datetime(2001, 12, 11), datetime(2001, 12, 12), timedelta(-1)),
-]
-
-
-@pytest.mark.parametrize("a,b,expected", testdata)
-def test_timedistance_v0(a, b, expected, logger):
-    logger.debug("this is debug message")
-    diff = a - b
-    assert diff == expected
-
-
-@pytest.mark.parametrize("a,b,expected", testdata, ids=["forward", "backward"])
-def test_timedistance_v1(a, b, expected, logger):
-    logger.debug("this is debug message")
-    diff = a - b
-    assert diff == expected
-
-
-def idfn(val):
-    if isinstance(val, (datetime,)):
-        # note this wouldn't show any hours/minutes/seconds
-        return val.strftime("%Y%m%d")
-
-
-@pytest.mark.parametrize("a,b,expected", testdata, ids=idfn)
-def test_timedistance_v2(a, b, expected):
-    diff = a - b
-    assert diff == expected
+    ini_file = os.path.join(os.path.dirname(__file__),"pytest.ini")
+    with open(ini_file, "rb") as image_file:
+        rp_logger.info("Some Text Here",
+                       attachment={"name": "test_name_screenshot.ini",
+                                   "data": image_file.read(),
+                                   "mime": "application/octet-stream"})
